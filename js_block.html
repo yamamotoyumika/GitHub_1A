@@ -21,6 +21,13 @@
 <body>
     <canvas id="myCanvas" width="480" height="320px"></canvas>
     <script>
+        function drowboll(){
+            ctx.beginPath()
+            ctx.arc(x, y, 10, 0, Math.PI*2);
+            ctx.fillStyle = "#0095dd";
+            ctx.fill();
+            ctx.closePath();
+        }
         const canvas = document.getElementById("myCanvas");
         const ctx = canvas.getContext("2d");
         ctx.beginPath();
@@ -38,7 +45,33 @@
         ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
         ctx.stroke();
         ctx.closePath();
+
+        //変数の宣言
+        let x = canvas.width / 2;
+        let y = canvas.height-30;
+        let dx = 2;  //xの差分(differencial, delta)
+        let dy = -2;
+
+        //関数の定義
+        function drow()
+        {
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            //矩形の範囲を消去(左、上、幅、高さ)
+            drowboll();
+            x += dx;
+            y += dy;
+        }
+        //関数を実行
+        setInterval(drow, 10)
+        //drow関数を一定感覚(10ミリ秒)で実行し続ける
+        
     </script>
 </body>
 
 </html>
+
+コードを整える
+リファクタリング(refactering)
+
+手続型(procedual) : 上から一行ずつ実行される
+イベント駆動型(event driven) : イベントが起こるとそこに対するプログラムが実行される

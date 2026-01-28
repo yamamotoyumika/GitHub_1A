@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Java Script Template</title>
+    <style>* { padding: 0; margin: 0; } canvas { background: #eee; display: block; margin: 0 auto; }
+
+#hako {
+    position:relative;
+    width: 480px;      
+    margin: 20px auto; 
+}
+
+
+#slider {
+    color: #333;
+    position: absolute;
+    left: 50px;
+    top: 150px;
+    width: 350px;
+}
+
+#slider p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+    height: 50px;
+}
+
+#slider span {
+    display: inline-block;
+    width: 3ch;        
+    text-align: right; 
+}
+#slider input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    height: 30px;
+    width: 280px;
+
+}
+#slider input[type="range"]::-webkit-slider-runnable-track {
+    background: transparent;
+    border: 2px solid #666;
+    height: 30px;
+}
+
+#slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0;
+    height: 0;
+    background: transparent;
+}
+    </style>
+</head>
+<body>
+
+<div id="hako">
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+
+    <div id="slider">
+        <p>R :<span id="rVal">255</span>
+            <input type="range" id="r" min="0" max="255" value="255">
+        </p>
+        <p>G :<span id="gVal">0</span>
+            <input type="range" id="g" min="0" max="255" value="0">
+        </p>
+        <p>B :<span id="bVal">0</span>
+            <input type="range" id="b" min="0" max="255" value="0">
+        </p>
+    </div>
+</div>
+
+
+<script>
+    //変数の宣言
+
+    //描画関係
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var sliderR = document.getElementById("r");
+    var sliderG = document.getElementById("g");
+    var sliderB = document.getElementById("b");
+    //キーボード関連
+    var rightPressed = false;
+    var leftPressed = false;
+    //マウスカーソルの座標
+    let mouseCursorX = 0;
+    let mouseCursorY = 0;
+    //マウスボタン
+    let mouseButton = false;
+
+    //カラー値
+    let colorR = 255;
+    let colorG = 0;
+    let colorB = 0;
+
+    //イベントハンドラーの追加
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+    // document.addEventListener("click", mouseClickHandler, false);
+    document.addEventListener("mousedown", mouseDownHandler, false);
+    document.addEventListener("mouseup", mouseUpHandler, false);
+
+    //イベントハンドラーの実装
+    function keyDownHandler(e) {
+        if(e.code  == "ArrowRight") {
+            rightPressed = true;
+        }
+        else if(e.code == 'ArrowLeft') {
+            leftPressed = true;
+        }
+    }
+    function keyUpHandler(e) {
+        if(e.code == 'ArrowRight') {
+            rightPressed = false;
+        }
+        else if(e.code == 'ArrowLeft') {
+            leftPressed = false;
+        }
+    }
+    function updateSliderColor(slider, color) {
+    const value = slider.value;
+    const max = slider.max;
+    const percent = (value / max) * 100;
+
+    slider.style.background = `
+        linear-gradient(
+            to right,
+            ${color} ${percent}%,
+            #666 ${percent}%
+        )
+    `;
+}
+    sliderR.addEventListener("input", updateColor);
+    sliderG.addEventListener("input", updateColor);
+    sliderB.addEventListener("input", updateColor);
+    const rVal = document.getElementById("rVal");
+    const gVal = document.getElementById("gVal");
+    const bVal = document.getElementById("bVal");
+
+function updateColor() {
+    colorR = sliderR.value;
+    colorG = sliderG.value;
+    colorB = sliderB.value;
+
+    rVal.textContent = (colorR / 255).toFixed(2);
+    gVal.textContent = (colorG / 255).toFixed(2);
+    bVal.textContent = (colorB / 255).toFixed(2);
+
+    updateSliderColor(sliderR, "#eee");
+    updateSliderColor(sliderG, "#eee");
+    updateSliderColor(sliderB, "#eee");
+}
+    // function mouseClickHandler(e)
+    // {
+    //     //Math.random() : 0~1までのランダムな値を返却する
+    //     colorR = Math.random() * 255;   //0~1に255をかけることで、ランダム範囲を0~255にする
+    //     colorG = Math.random() * 255;
+    //     colorB = Math.random() * 255;
+    // }
+
+    function mouseDownHandler(e)
+    {
+        mouseButton = true;
+    }
+    function mouseUpHandler(e)
+    {
+        mouseButton = false;
+    }
+
+    
+    //描画ループ
+    function draw() {
+        //再描画のため、画面を消去する
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = `rgb(${colorR}, ${colorG}, ${colorB})`;
+        ctx.fillRect(90, 60, 300, 80);
+        //文字列の描画
+        ctx.font = "16px Arial";    //サイズとフォント名
+        //ctx.fillStyle = "#404040";  //カラーの指定
+        //ctx.fillStyle = "rgb(255,255,255)";
+        ctx.fillStyle = "#000";    //変数の中身を文字列にしてカラー指定をする
+        ctx.fillText("スライダーバーをマウスでドラッグして、色を変更します", 30, 35);
+
+        //draw関数を実行し続けて、アニメーションを実現する
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+    updateColor();
+</script>
+
+</body>
+</html> 
